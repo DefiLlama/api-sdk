@@ -12,16 +12,14 @@ import type {
 } from "../types/fees.js";
 
 export class FeesModule {
-  constructor(private client: BaseClient) {}
+  constructor(private client: BaseClient) { }
 
   async getOverview(options?: FeesOverviewOptions): Promise<FeesOverviewResponse> {
     const params: Record<string, string | boolean> = {};
     if (options?.excludeTotalDataChart !== undefined) {
       params.excludeTotalDataChart = options.excludeTotalDataChart;
     }
-    if (options?.excludeTotalDataChartBreakdown !== undefined) {
-      params.excludeTotalDataChartBreakdown = options.excludeTotalDataChartBreakdown;
-    }
+    params.excludeTotalDataChartBreakdown = options?.excludeTotalDataChartBreakdown !== false;
     if (options?.dataType) {
       params.dataType = options.dataType;
     }
@@ -38,9 +36,7 @@ export class FeesModule {
     if (options?.excludeTotalDataChart !== undefined) {
       params.excludeTotalDataChart = options.excludeTotalDataChart;
     }
-    if (options?.excludeTotalDataChartBreakdown !== undefined) {
-      params.excludeTotalDataChartBreakdown = options.excludeTotalDataChartBreakdown;
-    }
+    params.excludeTotalDataChartBreakdown = options?.excludeTotalDataChartBreakdown !== false;
     if (options?.dataType) {
       params.dataType = options.dataType;
     }

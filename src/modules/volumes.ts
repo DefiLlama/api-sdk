@@ -12,7 +12,7 @@ import type {
 } from "../types/volumes.js";
 
 export class VolumesModule {
-  constructor(private client: BaseClient) {}
+  constructor(private client: BaseClient) { }
 
   async getDexOverview(
     options?: DexOverviewOptions
@@ -21,10 +21,7 @@ export class VolumesModule {
     if (options?.excludeTotalDataChart !== undefined) {
       params.excludeTotalDataChart = options.excludeTotalDataChart;
     }
-    if (options?.excludeTotalDataChartBreakdown !== undefined) {
-      params.excludeTotalDataChartBreakdown =
-        options.excludeTotalDataChartBreakdown;
-    }
+    params.excludeTotalDataChartBreakdown = options?.excludeTotalDataChartBreakdown !== false;
     if (options?.dataType) {
       params.dataType = options.dataType;
     }
@@ -41,10 +38,7 @@ export class VolumesModule {
     if (options?.excludeTotalDataChart !== undefined) {
       params.excludeTotalDataChart = options.excludeTotalDataChart;
     }
-    if (options?.excludeTotalDataChartBreakdown !== undefined) {
-      params.excludeTotalDataChartBreakdown =
-        options.excludeTotalDataChartBreakdown;
-    }
+    params.excludeTotalDataChartBreakdown = options?.excludeTotalDataChartBreakdown !== false;
     return this.client.get<DexOverviewResponse>(
       `/overview/dexs/${encodeURIComponent(chain)}`,
       { params: Object.keys(params).length > 0 ? params : undefined }
@@ -72,10 +66,7 @@ export class VolumesModule {
     if (options?.excludeTotalDataChart !== undefined) {
       params.excludeTotalDataChart = options.excludeTotalDataChart;
     }
-    if (options?.excludeTotalDataChartBreakdown !== undefined) {
-      params.excludeTotalDataChartBreakdown =
-        options.excludeTotalDataChartBreakdown;
-    }
+    params.excludeTotalDataChartBreakdown = options?.excludeTotalDataChartBreakdown !== false;
     return this.client.get<OptionsOverviewResponse>("/overview/options", {
       params: Object.keys(params).length > 0 ? params : undefined,
     });
