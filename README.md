@@ -448,6 +448,61 @@ Get summary for a specific derivatives protocol.
 const gmx = await proClient.volumes.getDerivativesSummary("gmx");
 ```
 
+### getDexMetrics 🔐
+
+Get summary of DEX metrics with protocol list (no charts).
+
+```typescript
+const metrics = await proClient.volumes.getDexMetrics();
+
+// With data type
+const metrics = await proClient.volumes.getDexMetrics({
+  dataType: "dailyVolume",
+});
+```
+
+### getDexMetricsByProtocol 🔐
+
+Get DEX metrics for a specific protocol.
+
+```typescript
+const uniswap = await proClient.volumes.getDexMetricsByProtocol("uniswap");
+```
+
+### getDerivativesMetrics 🔐
+
+Get summary of derivatives metrics with protocol list (no charts).
+
+```typescript
+const metrics = await proClient.volumes.getDerivativesMetrics();
+```
+
+### getDerivativesMetricsByProtocol 🔐
+
+Get derivatives metrics for a specific protocol.
+
+```typescript
+const hyperliquid = await proClient.volumes.getDerivativesMetricsByProtocol(
+  "hyperliquid"
+);
+```
+
+### getOptionsMetrics 🔐
+
+Get summary of options metrics with protocol list (no charts).
+
+```typescript
+const metrics = await proClient.volumes.getOptionsMetrics();
+```
+
+### getOptionsMetricsByProtocol 🔐
+
+Get options metrics for a specific protocol.
+
+```typescript
+const hegic = await proClient.volumes.getOptionsMetricsByProtocol("hegic");
+```
+
 ---
 
 ## Fees
@@ -876,6 +931,12 @@ import type {
   // Volumes
   DexOverviewResponse,
   DexSummaryResponse,
+  DexMetricsResponse,
+  DexMetricsByProtocolResponse,
+  DerivativesMetricsResponse,
+  DerivativesMetricsByProtocolResponse,
+  OptionsMetricsResponse,
+  OptionsMetricsByProtocolResponse,
 
   // Fees
   FeesOverviewResponse,
