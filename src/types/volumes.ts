@@ -8,7 +8,103 @@ export interface VolumeSummaryOptions {
   dataType?: "dailyVolume" | "totalVolume";
 }
 
+export interface VolumeMetricsOptions {
+  dataType?: "dailyVolume" | "totalVolume";
+}
+
+export interface VolumeMetricsResponse {
+  breakdown24h: Record<string, Record<string, number>> | null;
+  breakdown30d: Record<string, Record<string, number>> | null;
+  chain: string | null;
+  allChains: string[];
+  total24h: number;
+  total48hto24h: number;
+  total7d: number;
+  total14dto7d: number;
+  total30d: number;
+  total60dto30d: number;
+  total1y: number;
+  change_1d: number;
+  change_7d: number;
+  change_1m: number;
+  change_7dover7d: number;
+  change_30dover30d: number;
+  total7DaysAgo: number;
+  total30DaysAgo: number;
+  totalAllTime: number;
+  protocols: VolumeProtocol[];
+}
+
+export interface VolumeMetricsByProtocolResponse {
+  id: string;
+  name: string;
+  url: string;
+  description: string;
+  logo: string;
+  gecko_id: string | null;
+  cmcId: string | null;
+  chains: string[];
+  chain?: string | null;
+  twitter: string | null;
+  treasury?: string | null;
+  governanceID?: string[] | null;
+  github?: string[] | null;
+  tokenRights?: Record<string, unknown> | null;
+  symbol?: string | null;
+  address?: string | null;
+  linkedProtocols?: string[] | null;
+  childProtocols?: VolumeMetricsChildProtocol[] | null;
+  defillamaId: string;
+  displayName: string;
+  module?: string | null;
+  category?: string | null;
+  methodologyURL?: string | null;
+  methodology?: Record<string, string> | null;
+  forkedFrom?: string[] | null;
+  audits?: string | null;
+  audit_links?: string[] | null;
+  parentProtocol?: string | null;
+  previousNames?: string[] | null;
+  hallmarks?: [number, string][] | null;
+  defaultChartView?: string | null;
+  breakdownMethodology?: string | Record<string, Record<string, string>> | null;
+  slug: string;
+  protocolType: string;
+  total24h: number | null;
+  total48hto24h: number | null;
+  total7d: number | null;
+  total30d: number | null;
+  totalAllTime: number | null;
+  hasLabelBreakdown: boolean;
+  change_1d?: number | null;
+  dimensions?: Record<string, unknown>;
+  misrepresentedTokens?: boolean;
+  doublecounted?: boolean | null;
+  referralUrl?: string;
+}
+
+export interface VolumeMetricsChildProtocol {
+  name: string;
+  defillamaId: string;
+  displayName: string;
+  methodologyURL: string | null;
+  methodology: Record<string, string> | null;
+  defaultChartView: string | null;
+  breakdownMethodology: string | Record<string, Record<string, string>> | null;
+}
+
+export type DexMetricsOptions = VolumeMetricsOptions;
+export type DexMetricsResponse = VolumeMetricsResponse;
+export type DexMetricsByProtocolResponse = VolumeMetricsByProtocolResponse;
+export type DerivativesMetricsOptions = VolumeMetricsOptions;
+export type DerivativesMetricsResponse = VolumeMetricsResponse;
+export type DerivativesMetricsByProtocolResponse = VolumeMetricsByProtocolResponse;
+export type OptionsMetricsOptions = VolumeMetricsOptions;
+export type OptionsMetricsResponse = VolumeMetricsResponse;
+export type OptionsMetricsByProtocolResponse = VolumeMetricsByProtocolResponse;
+
 export interface VolumeProtocol {
+  id?: string;
   defillamaId: string;
   name: string;
   displayName: string;
@@ -27,6 +123,8 @@ export interface VolumeProtocol {
   total60dto30d?: number | null;
   total1y?: number | null;
   totalAllTime?: number | null;
+  total7DaysAgo?: number | null;
+  total30DaysAgo?: number | null;
   average1y?: number | null;
   monthlyAverage1y?: number | null;
   change_1d?: number | null;
@@ -36,6 +134,8 @@ export interface VolumeProtocol {
   change_30dover30d?: number | null;
   breakdown24h?: Record<string, Record<string, number>> | null;
   breakdown30d?: Record<string, Record<string, number>> | null;
+  linkedProtocols?: string[] | null;
+  doublecounted?: boolean | null;
   parentProtocol?: string | null;
   slug: string;
 }

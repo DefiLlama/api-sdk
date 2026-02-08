@@ -9,6 +9,15 @@ import type {
   OptionsSummaryResponse,
   DerivativesOverviewResponse,
   DerivativesSummaryResponse,
+  DexMetricsOptions,
+  DexMetricsResponse,
+  DexMetricsByProtocolResponse,
+  DerivativesMetricsOptions,
+  DerivativesMetricsResponse,
+  DerivativesMetricsByProtocolResponse,
+  OptionsMetricsOptions,
+  OptionsMetricsResponse,
+  OptionsMetricsByProtocolResponse,
 } from "../types/volumes.js";
 
 export class VolumesModule {
@@ -99,6 +108,100 @@ export class VolumesModule {
     return this.client.get<DerivativesSummaryResponse>(
       `/summary/derivatives/${encodeURIComponent(protocol)}`,
       { requiresAuth: true }
+    );
+  }
+
+  async getDexMetrics(options?: DexMetricsOptions): Promise<DexMetricsResponse> {
+    const params: Record<string, string> = {};
+    if (options?.dataType) {
+      params.dataType = options.dataType;
+    }
+    return this.client.get<DexMetricsResponse>("/metrics/dexs", {
+      base: "v2",
+      requiresAuth: true,
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+  }
+
+  async getDexMetricsByProtocol(
+    protocol: string,
+    options?: DexMetricsOptions
+  ): Promise<DexMetricsByProtocolResponse> {
+    const params: Record<string, string> = {};
+    if (options?.dataType) {
+      params.dataType = options.dataType;
+    }
+    return this.client.get<DexMetricsByProtocolResponse>(
+      `/metrics/dexs/protocol/${encodeURIComponent(protocol)}`,
+      {
+        base: "v2",
+        requiresAuth: true,
+        params: Object.keys(params).length > 0 ? params : undefined,
+      }
+    );
+  }
+
+  async getDerivativesMetrics(
+    options?: DerivativesMetricsOptions
+  ): Promise<DerivativesMetricsResponse> {
+    const params: Record<string, string> = {};
+    if (options?.dataType) {
+      params.dataType = options.dataType;
+    }
+    return this.client.get<DerivativesMetricsResponse>("/metrics/derivatives", {
+      base: "v2",
+      requiresAuth: true,
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+  }
+
+  async getDerivativesMetricsByProtocol(
+    protocol: string,
+    options?: DerivativesMetricsOptions
+  ): Promise<DerivativesMetricsByProtocolResponse> {
+    const params: Record<string, string> = {};
+    if (options?.dataType) {
+      params.dataType = options.dataType;
+    }
+    return this.client.get<DerivativesMetricsByProtocolResponse>(
+      `/metrics/derivatives/protocol/${encodeURIComponent(protocol)}`,
+      {
+        base: "v2",
+        requiresAuth: true,
+        params: Object.keys(params).length > 0 ? params : undefined,
+      }
+    );
+  }
+
+  async getOptionsMetrics(
+    options?: OptionsMetricsOptions
+  ): Promise<OptionsMetricsResponse> {
+    const params: Record<string, string> = {};
+    if (options?.dataType) {
+      params.dataType = options.dataType;
+    }
+    return this.client.get<OptionsMetricsResponse>("/metrics/options", {
+      base: "v2",
+      requiresAuth: true,
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+  }
+
+  async getOptionsMetricsByProtocol(
+    protocol: string,
+    options?: OptionsMetricsOptions
+  ): Promise<OptionsMetricsByProtocolResponse> {
+    const params: Record<string, string> = {};
+    if (options?.dataType) {
+      params.dataType = options.dataType;
+    }
+    return this.client.get<OptionsMetricsByProtocolResponse>(
+      `/metrics/options/protocol/${encodeURIComponent(protocol)}`,
+      {
+        base: "v2",
+        requiresAuth: true,
+        params: Object.keys(params).length > 0 ? params : undefined,
+      }
     );
   }
 }
