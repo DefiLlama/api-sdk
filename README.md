@@ -516,12 +516,15 @@ import { FeeDataType } from "@defillama/api";
 
 FeeDataType.DAILY_FEES; // "dailyFees"
 FeeDataType.DAILY_REVENUE; // "dailyRevenue"
+FeeDataType.DAILY_USER_FEES; // "dailyUserFees"
 FeeDataType.DAILY_HOLDERS_REVENUE; // "dailyHoldersRevenue"
-FeeDataType.DAILY_SUPPLY_SIDE_REVENUE;
-FeeDataType.DAILY_BRIBES_REVENUE;
-FeeDataType.DAILY_TOKEN_TAXES;
-FeeDataType.DAILY_APP_FEES;
-FeeDataType.DAILY_APP_REVENUE;
+FeeDataType.DAILY_CREATOR_REVENUE; // "dailyCreatorRevenue"
+FeeDataType.DAILY_SUPPLY_SIDE_REVENUE; // "dailySupplySideRevenue"
+FeeDataType.DAILY_PROTOCOL_REVENUE; // "dailyProtocolRevenue"
+FeeDataType.DAILY_BRIBES_REVENUE; // "dailyBribesRevenue"
+FeeDataType.DAILY_TOKEN_TAXES; // "dailyTokenTaxes"
+FeeDataType.DAILY_APP_FEES; // "dailyAppFees"
+FeeDataType.DAILY_APP_REVENUE; // "dailyAppRevenue"
 ```
 
 ### getOverview
@@ -988,11 +991,12 @@ AdapterType.OPEN_INTEREST; // "open-interest"
 
 // Volume Data Types
 VolumeDataType.DAILY_VOLUME; // "dailyVolume"
-VolumeDataType.TOTAL_VOLUME; // "totalVolume"
-VolumeDataType.DAILY_NOTIONAL_VOLUME;
-VolumeDataType.DAILY_PREMIUM_VOLUME;
-VolumeDataType.DAILY_BRIDGE_VOLUME;
-VolumeDataType.OPEN_INTEREST_AT_END;
+VolumeDataType.DAILY_NOTIONAL_VOLUME; // "dailyNotionalVolume"
+VolumeDataType.DAILY_PREMIUM_VOLUME; // "dailyPremiumVolume"
+VolumeDataType.DAILY_BRIDGE_VOLUME; // "dailyBridgeVolume"
+VolumeDataType.OPEN_INTEREST_AT_END; // "openInterestAtEnd"
+VolumeDataType.SHORT_OPEN_INTEREST_AT_END; // "shortOpenInterestAtEnd"
+VolumeDataType.LONG_OPEN_INTEREST_AT_END; // "longOpenInterestAtEnd"
 ```
 
 ---

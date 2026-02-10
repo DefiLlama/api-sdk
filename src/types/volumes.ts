@@ -1,15 +1,17 @@
+import type { VolumeDataType } from "../constants/dimensions.js";
+
 export interface VolumeOverviewOptions {
   excludeTotalDataChart?: boolean;
   excludeTotalDataChartBreakdown?: boolean;
-  dataType?: "dailyVolume" | "totalVolume";
+  dataType?: `${VolumeDataType}`;
 }
 
 export interface VolumeSummaryOptions {
-  dataType?: "dailyVolume" | "totalVolume";
+  dataType?: `${VolumeDataType}`;
 }
 
 export interface VolumeMetricsOptions {
-  dataType?: "dailyVolume" | "totalVolume";
+  dataType?: `${VolumeDataType}`;
 }
 
 export interface VolumeMetricsResponse {
