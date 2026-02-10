@@ -18,7 +18,6 @@ export enum FeeDataType {
   DAILY_TOKEN_TAXES = "dailyTokenTaxes",
   DAILY_APP_FEES = "dailyAppFees",
   DAILY_APP_REVENUE = "dailyAppRevenue",
-  DAILY_EARNINGS = "dailyEarnings",
 }
 
 export enum VolumeDataType {
