@@ -11,6 +11,8 @@ import { EcosystemModule } from "./modules/ecosystem.js";
 import { EtfsModule } from "./modules/etfs.js";
 import { DatModule } from "./modules/dat.js";
 import { AccountModule } from "./modules/account.js";
+import { RwaModule } from "./modules/rwa.js";
+import { RwaPerpsModule } from "./modules/rwaPerps.js";
 
 /**
  * DefiLlama API client for accessing DeFi data.
@@ -98,6 +100,16 @@ export class DefiLlama {
   public readonly account: AccountModule;
 
   /**
+   * RWA module for Real World Assets data.
+   */
+  public readonly rwa: RwaModule;
+
+  /**
+   * RWA perps module for Real World Assets perpetuals data.
+   */
+  public readonly rwaPerps: RwaPerpsModule;
+
+  /**
    * Create a new DefiLlama client.
    *
    * @param config - Optional configuration options
@@ -130,6 +142,8 @@ export class DefiLlama {
     this.etfs = new EtfsModule(this.client);
     this.dat = new DatModule(this.client);
     this.account = new AccountModule(this.client);
+    this.rwa = new RwaModule(this.client);
+    this.rwaPerps = new RwaPerpsModule(this.client);
   }
 
   /**
@@ -161,6 +175,8 @@ export { EcosystemModule } from "./modules/ecosystem.js";
 export { EtfsModule } from "./modules/etfs.js";
 export { DatModule } from "./modules/dat.js";
 export { AccountModule } from "./modules/account.js";
+export { RwaModule } from "./modules/rwa.js";
+export { RwaPerpsModule } from "./modules/rwaPerps.js";
 export type { DefiLlamaConfig } from "./client.js";
 export * from "./types/index.js";
 export * from "./constants/index.js";
