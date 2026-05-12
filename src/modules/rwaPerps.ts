@@ -13,6 +13,34 @@ import type {
   RwaPerpsStatsResponse,
 } from "../types/rwaPerps.js";
 
+interface RwaPerpsFundingHistoryApiPoint {
+  timestamp: number;
+  id: string;
+  contract: string;
+  venue: string;
+  funding_rate: string;
+  premium: string;
+  open_interest: string;
+  funding_payment: string;
+  created_at: string;
+}
+
+function normalizeFundingHistoryPoint(
+  point: RwaPerpsFundingHistoryApiPoint
+): RwaPerpsFundingHistoryPoint {
+  return {
+    timestamp: point.timestamp,
+    id: point.id,
+    contract: point.contract,
+    venue: point.venue,
+    fundingRate: point.funding_rate,
+    premium: point.premium,
+    openInterest: point.open_interest,
+    fundingPayment: point.funding_payment,
+    createdAt: point.created_at,
+  };
+}
+
 /**
  * Module for accessing RWA perpetuals (perps) market data from DefiLlama.
  * Provides methods for fetching the latest snapshot of all tracked perps
@@ -365,7 +393,7 @@ export class RwaPerpsModule {
     if (options?.startTime !== undefined) params.startTime = options.startTime;
     if (options?.endTime !== undefined) params.endTime = options.endTime;
 
-    return this.client.get<RwaPerpsFundingHistoryPoint[]>(
+    const points = await this.client.get<RwaPerpsFundingHistoryApiPoint[]>(
       `/funding/${encodeURIComponent(id)}`,
       {
         requiresAuth: true,
@@ -373,5 +401,7 @@ export class RwaPerpsModule {
         params: Object.keys(params).length > 0 ? params : undefined,
       }
     );
+
+    return points.map(normalizeFundingHistoryPoint);
   }
 }

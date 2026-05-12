@@ -136,11 +136,11 @@ export interface RwaPerpsFundingHistoryPoint {
   id: string;
   contract: string;
   venue: string;
-  funding_rate: string;
+  fundingRate: string;
   premium: string;
-  open_interest: string;
-  funding_payment: string;
-  created_at: string;
+  openInterest: string;
+  fundingPayment: string;
+  createdAt: string;
 }
 
 export interface RwaPerpsFundingHistoryOptions {
