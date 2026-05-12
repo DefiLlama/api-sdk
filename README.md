@@ -61,6 +61,8 @@ interface DefiLlamaConfig {
 - [Ecosystem](#ecosystem) - Categories, oracles, treasuries 🔐
 - [ETFs](#etfs) - Bitcoin & Ethereum ETF data 🔐
 - [DAT](#dat) - Digital Asset Treasury data 🔐
+- [RWA](#rwa) - Real World Asset (RWA) dashboard data 🔐
+- [RWA Perps](#rwa-perps) - RWA perpetuals market data 🔐
 - [Account](#account) - API usage management 🔐
 
 🔐 = Requires Pro API key
@@ -858,6 +860,255 @@ const mstr = await proClient.dat.getInstitution("MSTR");
 
 ---
 
+## RWA 🔐
+
+Real World Asset (RWA) spot dashboard data. **All endpoints require Pro API key.**
+
+### getCurrent
+
+Get the latest snapshot of every tracked RWA asset.
+
+```typescript
+const assets = await proClient.rwa.getCurrent();
+// Returns: RwaAsset[]
+```
+
+### getList
+
+Get a lightweight enumeration of canonical market ids, platforms, chains, categories, asset groups, and an `idMap` from canonical market id to underlying asset id.
+
+```typescript
+const list = await proClient.rwa.getList();
+const ondoId = list.idMap["ondo-finance-usdy"];
+```
+
+### getStats
+
+Get aggregate stats segmented by chain, category, platform, and asset group. Each segment is split into `base` / `stablecoinsOnly` / `governanceOnly` / `stablecoinsAndGovernance`.
+
+```typescript
+const stats = await proClient.rwa.getStats();
+console.log(stats.assetCount, stats.totalOnChainMcap);
+// Returns: RwaStatsResponse
+```
+
+### getIdMap
+
+Get a map of canonical market id → underlying asset id.
+
+```typescript
+const idMap = await proClient.rwa.getIdMap();
+```
+
+### getAsset
+
+Get a single asset by its underlying id.
+
+```typescript
+const asset = await proClient.rwa.getAsset("1234");
+```
+
+### getAssetByCanonicalMarketId
+
+Get a single asset by its canonical market id (slug).
+
+```typescript
+const asset = await proClient.rwa.getAssetByCanonicalMarketId("ondo-finance-usdy");
+```
+
+### getAssetsByChain / getAssetsByCategory / getAssetsByAssetGroup
+
+Filter the current snapshot by chain, category, or asset group.
+
+```typescript
+const { data: ethAssets } = await proClient.rwa.getAssetsByChain("Ethereum");
+const { data: treasuries } = await proClient.rwa.getAssetsByCategory("Treasuries");
+const { data: usd } = await proClient.rwa.getAssetsByAssetGroup("USD");
+```
+
+### getChart / getChartByName
+
+Get the smoothed historical series for a single asset by id or canonical market id.
+
+```typescript
+const seriesById = await proClient.rwa.getChart("1234");
+const seriesByName = await proClient.rwa.getChartByName("ondo-finance-usdy");
+// Returns: RwaHistoricalSeries
+```
+
+### getAssetChart
+
+Get the per-asset PG-cache backed chart, including a per-chain breakdown nested in each point.
+
+```typescript
+const series = await proClient.rwa.getAssetChart("1234");
+const latest = series.at(-1);
+for (const [chain, b] of Object.entries(latest?.chains ?? {})) {
+  console.log(`${chain}: $${b.onChainMcap.toLocaleString()}`);
+}
+// Returns: RwaAssetChartPoint[]
+```
+
+### Slice charts (chain / category / platform / assetGroup)
+
+Each slice has both an aggregate chart and a per-asset breakdown chart.
+
+```typescript
+const ethChart = await proClient.rwa.getChainChart("Ethereum");
+const ethBreakdown = await proClient.rwa.getChainAssetBreakdownChart("Ethereum");
+
+const treasuriesChart = await proClient.rwa.getCategoryChart("Treasuries");
+const treasuriesBreakdown = await proClient.rwa.getCategoryAssetBreakdownChart("Treasuries");
+
+const ondoPlatform = await proClient.rwa.getPlatformChart("Ondo");
+const ondoBreakdown = await proClient.rwa.getPlatformAssetBreakdownChart("Ondo");
+
+const usdChart = await proClient.rwa.getAssetGroupChart("USD");
+const usdBreakdown = await proClient.rwa.getAssetGroupAssetBreakdownChart("USD");
+// Aggregate returns: RwaHistoricalSeries
+// Breakdown returns: RwaAssetBreakdownSeries
+```
+
+### Overview breakdown charts
+
+Each overview chart returns a row-per-timestamp time series with one column per slice.
+
+```typescript
+const byChain = await proClient.rwa.getChainBreakdownChart({ key: "onChainMcap" });
+const byCategory = await proClient.rwa.getCategoryBreakdownChart({
+  key: "activeMcap",
+  includeStablecoin: true,
+});
+const byPlatform = await proClient.rwa.getPlatformBreakdownChart();
+const byAssetGroup = await proClient.rwa.getAssetGroupBreakdownChart({
+  key: "defiActiveTvl",
+  includeGovernance: true,
+});
+// Returns: RwaBreakdownChartResponse
+```
+
+---
+
+## RWA Perps 🔐
+
+RWA perpetuals market data. **All endpoints require Pro API key.**
+
+### getCurrent
+
+Get the latest snapshot of every tracked RWA perps market, sorted by descending open interest.
+
+```typescript
+const markets = await proClient.rwaPerps.getCurrent();
+// Returns: RwaPerpsMarket[]
+```
+
+### getList
+
+Get a lightweight enumeration of contracts, venues, categories, asset groups, and the total market count.
+
+```typescript
+const list = await proClient.rwaPerps.getList();
+```
+
+### getStats
+
+Get aggregate stats segmented by venue, category, and asset group.
+
+```typescript
+const stats = await proClient.rwaPerps.getStats();
+console.log(stats.totalMarkets, stats.totalOpenInterest);
+// Returns: RwaPerpsStatsResponse
+```
+
+### getIdMap
+
+Get a map of canonical market id (and aliases) → resolved id.
+
+```typescript
+const idMap = await proClient.rwaPerps.getIdMap();
+```
+
+### getMarket
+
+Get a single market by id or alias. The server resolves common aliases via the id-map before lookup.
+
+```typescript
+const market = await proClient.rwaPerps.getMarket("hyperliquid:btc-usd");
+```
+
+### getMarketsByContract / getMarketsByVenue / getMarketsByCategory / getMarketsByAssetGroup
+
+Filter the current snapshot by contract, venue, category, or asset group.
+
+```typescript
+const byContract = await proClient.rwaPerps.getMarketsByContract("btc-usd");
+const byVenue = await proClient.rwaPerps.getMarketsByVenue("hyperliquid");
+const byCategory = await proClient.rwaPerps.getMarketsByCategory("Treasuries");
+const byAssetGroup = await proClient.rwaPerps.getMarketsByAssetGroup("USD");
+```
+
+### getMarketChart
+
+Get the per-market historical chart by id or alias.
+
+```typescript
+const series = await proClient.rwaPerps.getMarketChart("hyperliquid:btc-usd");
+// Returns: RwaPerpsMarketChartPoint[]
+```
+
+### getVenueChart / getCategoryChart
+
+Get the aggregated historical chart for a single venue or category.
+
+```typescript
+const venueSeries = await proClient.rwaPerps.getVenueChart("hyperliquid");
+const categorySeries = await proClient.rwaPerps.getCategoryChart("Treasuries");
+// Returns: RwaPerpsAggregateHistoricalPoint[]
+```
+
+### getOverviewBreakdownChart
+
+Get an overview breakdown chart, optionally scoped to a single venue or asset group. The upstream server restricts which `breakdown` values are valid for each scope; invalid combinations return `400`.
+
+```typescript
+const rows = await proClient.rwaPerps.getOverviewBreakdownChart({
+  key: "openInterest",
+  breakdown: "venue",
+});
+
+const scopedRows = await proClient.rwaPerps.getOverviewBreakdownChart({
+  key: "volume24h",
+  breakdown: "baseAsset",
+  venue: "hyperliquid",
+});
+// Returns: RwaPerpsBreakdownChartResponse
+```
+
+### getContractBreakdownChart
+
+Get the contract breakdown chart, with one column per contract. Optionally scoped to a single venue or asset group.
+
+```typescript
+const rows = await proClient.rwaPerps.getContractBreakdownChart({
+  key: "volume24h",
+  venue: "hyperliquid",
+});
+```
+
+### getFundingHistory
+
+Get the per-market funding payment history. Optional `startTime` / `endTime` are inclusive unix-second bounds. Numeric fields are returned as strings to preserve full Postgres NUMERIC precision.
+
+```typescript
+const sevenDaysAgo = Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60;
+const history = await proClient.rwaPerps.getFundingHistory("hyperliquid:btc-usd", {
+  startTime: sevenDaysAgo,
+});
+// Returns: RwaPerpsFundingHistoryPoint[]
+```
+
+---
+
 ## Account 🔐
 
 API account management. **Requires Pro API key.**
@@ -966,6 +1217,41 @@ import type {
   // DAT
   DatInstitutionsResponse,
   DatInstitutionResponse,
+
+  // RWA
+  RwaAsset,
+  RwaId,
+  RwaStatsBucket,
+  RwaStatsBucketGroup,
+  RwaStatsResponse,
+  RwaListResponse,
+  RwaIdMapResponse,
+  RwaAssetsBySliceResponse,
+  RwaChartMetricKey,
+  RwaBreakdownOptions,
+  RwaBreakdownChartRow,
+  RwaBreakdownChartResponse,
+  RwaHistoricalPoint,
+  RwaHistoricalSeries,
+  RwaAssetBreakdownPoint,
+  RwaAssetBreakdownSeries,
+  RwaAssetChartPoint,
+  RwaAssetChartChainBreakdown,
+
+  // RWA Perps
+  RwaPerpsMarket,
+  RwaPerpsStatsBucket,
+  RwaPerpsStatsResponse,
+  RwaPerpsListResponse,
+  RwaPerpsIdMapResponse,
+  RwaPerpsMarketChartPoint,
+  RwaPerpsAggregateHistoricalPoint,
+  RwaPerpsBreakdownKey,
+  RwaPerpsOverviewBreakdown,
+  RwaPerpsBreakdownChartRow,
+  RwaPerpsBreakdownChartResponse,
+  RwaPerpsFundingHistoryPoint,
+  RwaPerpsFundingHistoryOptions,
 
   // Config
   DefiLlamaConfig,
