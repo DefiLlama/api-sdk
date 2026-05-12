@@ -143,7 +143,7 @@ export class RwaModule {
    * ```
    */
   async getAsset(id: string): Promise<RwaAsset> {
-    return this.client.get<RwaAsset>(`/rwa/${encodeURIComponent(id)}`, {
+    return this.client.get<RwaAsset>(`/${encodeURIComponent(id)}`, {
       requiresAuth: true,
       apiNamespace: "rwa",
     });
