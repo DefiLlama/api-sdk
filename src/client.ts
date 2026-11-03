@@ -118,7 +118,7 @@ export class BaseClient {
   async get<T>(
     endpoint: string,
     options: {
-      params?: Record<string, string | number | boolean | undefined>;
+      params?: Record<string, string | number | boolean | string[] | undefined>;
       requiresAuth?: boolean;
       base?: BaseUrl;
       apiNamespace?: string;
@@ -131,8 +131,10 @@ export class BaseClient {
     if (params) {
       const searchParams = new URLSearchParams();
       for (const [key, value] of Object.entries(params)) {
-        if (value !== undefined) {
-          searchParams.append(key, String(value));
+        if (value === undefined) continue;
+        // Arrays are sent as repeated params: key=a&key=b
+        for (const v of Array.isArray(value) ? value : [value]) {
+          searchParams.append(key, String(v));
         }
       }
       const queryString = searchParams.toString();
