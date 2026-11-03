@@ -378,12 +378,6 @@ export interface YieldStability {
   base_reward_intrinsic: number | null;
 }
 
-/** Which history series exist for a pool. */
-export interface YieldAvailableHistory {
-  supply: boolean;
-  borrow: boolean;
-}
-
 /**
  * An earn pool from `/yields/v2/earn`. Replaces {@link YieldPool}.
  *
@@ -429,37 +423,6 @@ export interface EarnPoolHolders {
   top_10_share_pct: number | null;
 }
 
-export type YieldHolderMovementStatus = "up" | "down" | "steady" | "entered_top_10" | "unknown";
-
-/** A top-10 holder's share and balance movement over a window. */
-export interface YieldHolderChange {
-  share: { status: YieldHolderMovementStatus; pct_point_delta: number | null };
-  balance: { status: YieldHolderMovementStatus; pct_delta: number | null };
-}
-
-export interface YieldTopHolder {
-  rank: number;
-  address: string;
-  /** Raw token balance as a decimal string (scale by `decimals`) */
-  balance: string | null;
-  share_pct: number | null;
-  change_7d: YieldHolderChange;
-  change_30d: YieldHolderChange;
-}
-
-/** Holder data on the pool detail route. */
-export interface EarnPoolDetailHolders extends EarnPoolHolders {
-  count_change_7d: number | null;
-  count_change_30d: number | null;
-  top_10_holders: { decimals: number | null; holders: YieldTopHolder[] } | null;
-}
-
-/** A single earn pool from `/yields/v2/earn/{id}`: an {@link EarnPool} plus holder detail. */
-export interface EarnPoolDetail extends Omit<EarnPool, "holders"> {
-  holders: EarnPoolDetailHolders;
-  available_history: YieldAvailableHistory;
-}
-
 /** Daily earn pool history point. Replaces {@link YieldChartDataPoint}. */
 export interface EarnHistoryPoint {
   /** YYYY-MM-DD */
@@ -502,11 +465,6 @@ export interface EarnQueryResponse {
   pagination: { total: number; page: number; limit: number };
 }
 
-/** Response from `/yields/v2/earn/{id}`. */
-export interface EarnPoolResponse {
-  data: EarnPoolDetail;
-}
-
 /** Response from `/yields/v2/earn/{id}/history`. Replaces {@link YieldChartResponse}. */
 export interface EarnHistoryResponse {
   data: EarnHistoryPoint[];
@@ -545,11 +503,6 @@ export interface BorrowMarket {
   };
 }
 
-/** A single borrow market from `/yields/v2/borrow/markets/{id}`. */
-export interface BorrowMarketDetail extends BorrowMarket {
-  available_history: YieldAvailableHistory;
-}
-
 /**
  * Daily borrow market history point. Together with {@link EarnHistoryPoint}
  * (supply side) this replaces {@link LendBorrowChartDataPoint}.
@@ -568,11 +521,6 @@ export interface BorrowMarketsResponse {
   /** Newest sample time in the snapshot (ISO), when rows carry one */
   as_of?: string;
   data: BorrowMarket[];
-}
-
-/** Response from `/yields/v2/borrow/markets/{id}`. */
-export interface BorrowMarketResponse {
-  data: BorrowMarketDetail;
 }
 
 /** Response from `/yields/v2/borrow/markets/{id}/history`. */

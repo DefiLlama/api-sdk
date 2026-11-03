@@ -10,10 +10,8 @@ import type {
   EarnResponse,
   EarnQueryParams,
   EarnQueryResponse,
-  EarnPoolResponse,
   EarnHistoryResponse,
   BorrowMarketsResponse,
-  BorrowMarketResponse,
   BorrowMarketHistoryResponse,
   YieldHistoryRange,
 } from "../types/yields.js";
@@ -244,20 +242,6 @@ export class YieldsModule {
   }
 
   /**
-   * Get one earn pool with holder detail (top 10 holders, holder count changes)
-   * and which history series exist.
-   *
-   * @param id - Pool UUID (same id as v1 `pool`)
-   * @throws NotFoundError if the pool is not in v2
-   */
-  async getEarnPool(id: string): Promise<EarnPoolResponse> {
-    return this.client.get<EarnPoolResponse>(`/v2/earn/${encodeURIComponent(id)}`, {
-      requiresAuth: true,
-      apiNamespace: "yields",
-    });
-  }
-
-  /**
    * Get daily TVL/APY history for an earn pool. Replaces {@link YieldsModule.getPoolChart}.
    *
    * Changes from v1: one point per day (`date`, YYYY-MM-DD) with nested
@@ -286,19 +270,6 @@ export class YieldsModule {
       requiresAuth: true,
       apiNamespace: "yields",
     });
-  }
-
-  /**
-   * Get one borrow market and which history series exist.
-   *
-   * @param id - Pool UUID
-   * @throws NotFoundError if the market is not in v2
-   */
-  async getBorrowMarket(id: string): Promise<BorrowMarketResponse> {
-    return this.client.get<BorrowMarketResponse>(
-      `/v2/borrow/markets/${encodeURIComponent(id)}`,
-      { requiresAuth: true, apiNamespace: "yields" }
-    );
   }
 
   /**

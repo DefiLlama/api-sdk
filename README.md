@@ -342,15 +342,6 @@ const { data, pagination } = await proClient.yields.queryEarn({
 // Returns: { data: EarnPool[]; pagination: { total; page; limit } }
 ```
 
-### getEarnPool
-
-Get one earn pool with top-10 holders, holder count changes, and available history.
-
-```typescript
-const { data } = await proClient.yields.getEarnPool("747c1d2a-c668-4682-b9f9-296708a3dd90");
-// Returns: { data: EarnPoolDetail }; throws NotFoundError for unknown ids
-```
-
 ### getEarnHistory
 
 Get daily TVL/APY history for an earn pool. `range` is `"30d"`, `"90d"` or `"max"` (default).
@@ -367,13 +358,6 @@ Get all borrow markets with supply APY, borrow cost, LTV, and liquidity.
 ```typescript
 const { data } = await proClient.yields.getBorrowMarkets();
 // Returns: { as_of?: string; data: BorrowMarket[] }
-```
-
-### getBorrowMarket
-
-```typescript
-const { data } = await proClient.yields.getBorrowMarket("e880e828-ca59-4ec6-8d4f-27182a4dc23d");
-// Returns: { data: BorrowMarketDetail }
 ```
 
 ### getBorrowMarketHistory
@@ -957,7 +941,6 @@ import type {
 
   // Yields
   EarnPool,
-  EarnPoolDetail,
   EarnHistoryPoint,
   EarnQueryParams,
   BorrowMarket,
