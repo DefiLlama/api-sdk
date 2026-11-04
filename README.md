@@ -313,62 +313,77 @@ const dominance = await proClient.stablecoins.getDominance("ethereum", 1);
 
 Yield farming, lending, staking, and perpetual funding rates. **All endpoints require Pro API key.**
 
-### getPools
+### getEarn
 
-Get all yield pools with current APY.
+Get all earn pools (pools with at least $10K supplied).
 
 ```typescript
-const pools = await proClient.yields.getPools();
-// Returns: { status: string; data: YieldPool[] }
+const { as_of, data } = await proClient.yields.getEarn();
+// Returns: { as_of?: string; data: EarnPool[] }
+const pool = data[0];
+pool.protocol; // "Aave V3" (display name, not a slug)
+pool.apy.current.total; // also apy.avg_7d / apy.avg_30d, each { base, reward, total }
+pool.underlying_tokens; // [{ address, symbol, decimals }]
 ```
 
-### getPoolsOld
+### queryEarn
 
-Get legacy yield pools format with additional fields.
+Filter and paginate earn pools server-side. `chain` and `protocol` are slugs (up to 20 values each); rows are sorted by TVL descending.
 
 ```typescript
-const pools = await proClient.yields.getPoolsOld();
+const { data, pagination } = await proClient.yields.queryEarn({
+  chain: ["ethereum", "arbitrum"],
+  protocol: "aave-v3",
+  stablecoin: true, // also single_asset_exposure, impermanent_loss_risk
+  min_tvl: 1_000_000,
+  limit: 100, // 1-300, default 100
+  page: 1,
+});
+// Returns: { data: EarnPool[]; pagination: { total; page; limit } }
 ```
 
-### getPoolChart
+### getEarnHistory
 
-Get historical APY and TVL for a specific pool.
+Get daily TVL/APY history for an earn pool. `range` is `"30d"`, `"90d"` or `"max"` (default).
 
 ```typescript
-const chart = await proClient.yields.getPoolChart("pool-uuid-here");
+const { data } = await proClient.yields.getEarnHistory("747c1d2a-c668-4682-b9f9-296708a3dd90", "30d");
+// Returns: { data: EarnHistoryPoint[] } — { date, tvl_usd, apy: { avg_1d, avg_7d, avg_30d }, ... }
 ```
 
-### getBorrowPools
+### getBorrowMarkets
 
-Get lending/borrowing pools with supply and borrow rates.
+Get all borrow markets with supply APY, borrow cost, LTV, and liquidity.
 
 ```typescript
-const borrowPools = await proClient.yields.getBorrowPools();
+const { data } = await proClient.yields.getBorrowMarkets();
+// Returns: { as_of?: string; data: BorrowMarket[] }
 ```
 
-### getLendBorrowChart
+### getBorrowMarketHistory
 
-Get historical lending and borrowing rates.
+Get daily borrow-side history for a market. `range` is `"30d"`, `"90d"` or `"max"` (default).
 
 ```typescript
-const chart = await proClient.yields.getLendBorrowChart("pool-uuid-here");
+const { data } = await proClient.yields.getBorrowMarketHistory("e880e828-ca59-4ec6-8d4f-27182a4dc23d", "90d");
+// Returns: { data: BorrowMarketHistoryPoint[] }
 ```
 
-### getPerps
+### getPerpFundingRates
 
-Get perpetual futures funding rates.
+Get perpetual futures funding rates, open interest and index price (Binance and OKX).
 
 ```typescript
-const perps = await proClient.yields.getPerps();
+const perps = await proClient.yields.getPerpFundingRates();
 // Returns: { status: string; data: PerpPool[] }
 ```
 
-### getLsdRates
+### getLstRates
 
-Get liquid staking derivative exchange rates.
+Get liquid staking token exchange rates.
 
 ```typescript
-const lsdRates = await proClient.yields.getLsdRates();
+const lstRates = await proClient.yields.getLstRates();
 // Returns: LsdRate[]
 ```
 
@@ -887,7 +902,7 @@ import {
 } from "@defillama/api";
 
 try {
-  const data = await client.yields.getPools();
+  const data = await client.yields.getEarn();
 } catch (error) {
   if (error instanceof ApiKeyRequiredError) {
     console.log("Pro API key required for this endpoint");
@@ -925,10 +940,15 @@ import type {
   StablecoinDetails,
 
   // Yields
-  YieldPool,
-  BorrowPool,
+  EarnPool,
+  EarnHistoryPoint,
+  EarnQueryParams,
+  BorrowMarket,
+  BorrowMarketHistoryPoint,
   PerpPool,
   LsdRate,
+  YieldPool, // deprecated (v1)
+  BorrowPool, // deprecated (v1)
 
   // Volumes
   DexOverviewResponse,
