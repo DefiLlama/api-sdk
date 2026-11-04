@@ -30,7 +30,9 @@
     "typecheck": "tsc --noEmit",
     "validate:api": "bun scripts/validation/run.ts",
     "validate:datatypes": "bun scripts/validate-datatypes.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "release": "npm login && npm version patch && npm publish",
+    "release:minor": "npm login && npm version minor && npm publish"
   },
   "keywords": [
     "defillama",
