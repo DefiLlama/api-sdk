@@ -52,10 +52,10 @@ export class BridgesModule {
     const params: Record<string, string | number> = {};
     if (options?.limit !== undefined) params.limit = options.limit;
     if (options?.startTimestamp !== undefined)
-      params.startTimestamp = options.startTimestamp;
+      params.starttimestamp = options.startTimestamp;
     if (options?.endTimestamp !== undefined)
-      params.endTimestamp = options.endTimestamp;
-    if (options?.sourceChain) params.sourceChain = options.sourceChain;
+      params.endtimestamp = options.endTimestamp;
+    if (options?.sourceChain) params.sourcechain = options.sourceChain;
     if (options?.address) params.address = options.address;
 
     return this.client.get<BridgeTransaction[]>(`/transactions/${id}`, {
