@@ -46,6 +46,11 @@ export class BaseClient {
     return !!this.apiKey;
   }
 
+  /** Configured request timeout in milliseconds. */
+  get timeoutMs(): number {
+    return this.timeout;
+  }
+
   getApiKey(): string | undefined {
     return this.apiKey;
   }
