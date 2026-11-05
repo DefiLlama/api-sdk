@@ -1,5 +1,5 @@
 import type { BaseClient } from "../client.js";
-import { ApiError, ApiKeyRequiredError, NotFoundError, RateLimitError } from "../errors.js";
+import { ApiKeyRequiredError } from "../errors.js";
 import type { UsageResponse } from "../types/account.js";
 
 /**
@@ -36,27 +36,13 @@ export class AccountModule {
       throw new ApiKeyRequiredError("/usage");
     }
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.client.timeoutMs);
-
-    try {
-      const response = await fetch(`https://pro-api.llama.fi/usage/${apiKey}`, {
+    return this.client.request<UsageResponse>(
+      `https://pro-api.llama.fi/usage/${apiKey}`,
+      "/usage",
+      {
+        method: "GET",
         headers: { Accept: "application/json" },
-        signal: controller.signal,
-      });
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new NotFoundError("/usage");
-        }
-        if (response.status === 429) {
-          const retryAfter = response.headers.get("Retry-After");
-          throw new RateLimitError(retryAfter ? parseInt(retryAfter, 10) : undefined);
-        }
-        throw new ApiError(response.status, `Failed to fetch usage: ${response.statusText}`);
       }
-      return (await response.json()) as UsageResponse;
-    } finally {
-      clearTimeout(timeoutId);
-    }
+    );
   }
 }
