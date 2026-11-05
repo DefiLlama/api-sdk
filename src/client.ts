@@ -115,6 +115,29 @@ export class BaseClient {
     throw new ApiError(response.status, `API request failed: ${response.statusText}`, errorBody);
   }
 
+  /**
+   * Send a request with the configured timeout applied and map the response
+   * through {@link handleResponse}.
+   *
+   * Every method that talks to the API goes through here, including modules
+   * that need to build their own URL.
+   */
+  async request<T>(url: string, endpoint: string, init: RequestInit): Promise<T> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...init,
+        signal: controller.signal,
+      });
+
+      return await this.handleResponse<T>(response, endpoint);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   async get<T>(
     endpoint: string,
     options: {
@@ -143,22 +166,12 @@ export class BaseClient {
       }
     }
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-        signal: controller.signal,
-      });
-
-      return this.handleResponse<T>(response, endpoint);
-    } finally {
-      clearTimeout(timeoutId);
-    }
+    return this.request<T>(url, endpoint, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    });
   }
 
   async post<T>(
@@ -174,23 +187,13 @@ export class BaseClient {
 
     const url = this.buildUrl(endpoint, requiresAuth, base, apiNamespace);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-        signal: controller.signal,
-      });
-
-      return this.handleResponse<T>(response, endpoint);
-    } finally {
-      clearTimeout(timeoutId);
-    }
+    return this.request<T>(url, endpoint, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
   }
 }
