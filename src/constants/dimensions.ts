@@ -6,6 +6,7 @@ export enum AdapterType {
   AGGREGATOR_DERIVATIVES = "aggregator-derivatives",
   OPTIONS = "options",
   BRIDGE_AGGREGATORS = "bridge-aggregators",
+  BRIDGES = "bridges",
   OPEN_INTEREST = "open-interest",
 }
 
@@ -31,6 +32,15 @@ export enum VolumeDataType {
   OPEN_INTEREST_AT_END = "openInterestAtEnd",
   SHORT_OPEN_INTEREST_AT_END = "shortOpenInterestAtEnd",
   LONG_OPEN_INTEREST_AT_END = "longOpenInterestAtEnd",
+}
+
+export enum BridgeDataType {
+  DAILY_AGGREGATED_VOLUME = "dailyAggregatedVolume",
+  DAILY_OUTGOING_VOLUME = "dailyOutgoingVolume",
+  DAILY_INCOMING_VOLUME = "dailyIncomingVolume",
+  DAILY_TX_COUNT = "dailyTxCount",
+  DAILY_OUTGOING_TX_COUNT = "dailyOutgoingTxCount",
+  DAILY_INCOMING_TX_COUNT = "dailyIncomingTxCount",
 }
 
 export const DataTypeShortKeys = {

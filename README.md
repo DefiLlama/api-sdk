@@ -675,36 +675,79 @@ Response includes:
 
 ## Bridges 🔐
 
-Cross-chain bridge volume and transaction data. **All endpoints require Pro API key.**
+Cross-chain bridge volumes and transfer counts from the dimensions API (`/api/v2/.../bridges`). **All endpoints require Pro API key.**
 
-### getAll
+Bridges are identified by protocol slug (e.g. `optimism-bridge`, `cbridge`), chains by name (e.g. `Ethereum`), and categories by slug (e.g. `canonical-bridge`). Discover them with `getMetrics()` and `getCategories()`. Legacy numeric bridge IDs (`getById`, `getTransactions`) are a different identifier set.
 
-Get all bridges with volume data.
+Every method accepts an optional `{ dataType }` (see `BridgeDataType`):
 
-```typescript
-const bridges = await proClient.bridges.getAll();
+| dataType | Unit | Meaning |
+| --- | --- | --- |
+| `dailyAggregatedVolume` (default) | USD | Protocol level: outgoing volume across chains. Per chain: incoming + outgoing. |
+| `dailyOutgoingVolume` | USD | Value leaving each chain through the bridge. |
+| `dailyIncomingVolume` | USD | Value arriving on each chain through the bridge. |
+| `dailyTxCount` | Transfers | Protocol level: outgoing transfers. Per chain: incoming + outgoing. |
+| `dailyOutgoingTxCount` | Transfers | Transfers leaving each chain. |
+| `dailyIncomingTxCount` | Transfers | Transfers arriving on each chain. |
 
-// Include chain breakdown
-const bridges = await proClient.bridges.getAll({ includeChains: true });
-```
+Per-chain aggregated values count both directions, so summing a chain breakdown can double count a transfer. Use the protocol chart for a bridge's total. Chain netflow = `dailyIncomingVolume` − `dailyOutgoingVolume`.
 
-### getById
-
-Get detailed bridge information.
-
-```typescript
-const bridge = await proClient.bridges.getById(1);
-// Returns: BridgeDetail with volume breakdown, tx counts, chain breakdown
-```
-
-### getVolumeByChain
-
-Get bridge volume for a specific chain.
+### Metrics
 
 ```typescript
-const volume = await proClient.bridges.getVolumeByChain("Ethereum");
-// Returns: BridgeVolumeDataPoint[]
+import { BridgeDataType } from "@defillama/api";
+
+const all = await proClient.bridges.getMetrics();
+// Returns: BridgeMetricsResponse { total24h, total7d, ..., allChains, protocols: BridgeDimensionProtocol[] }
+
+const eth = await proClient.bridges.getMetricsByChain("Ethereum", {
+  dataType: BridgeDataType.DAILY_TX_COUNT,
+});
+
+const op = await proClient.bridges.getMetricsByProtocol("optimism-bridge");
+// Returns: BridgeMetricsByProtocolResponse (metadata, totals, chainBreakdown)
+
+const categories = await proClient.bridges.getCategories();
+// Returns: BridgeCategorySummary[] { category, total24h, total7d, total30d, chains }
+
+const canonical = await proClient.bridges.getMetricsByCategory("canonical-bridge");
+const canonicalEth = await proClient.bridges.getMetricsByCategoryAndChain("canonical-bridge", "Ethereum");
 ```
+
+### Charts
+
+Single series return `[timestamp, value][]`; breakdowns return `[timestamp, { [key]: value }][]`. Timestamps are Unix seconds at the start of each UTC day.
+
+```typescript
+await proClient.bridges.getChart();
+await proClient.bridges.getChartChainBreakdown();
+await proClient.bridges.getChartProtocolBreakdown();
+
+await proClient.bridges.getChartByChain("Ethereum", { dataType: "dailyOutgoingVolume" });
+await proClient.bridges.getChartByChainProtocolBreakdown("Ethereum");
+
+await proClient.bridges.getChartByProtocol("optimism-bridge", { dataType: "dailyTxCount" });
+await proClient.bridges.getChartByProtocolChainBreakdown("optimism-bridge", { dataType: "dailyIncomingVolume" });
+await proClient.bridges.getChartByProtocolVersionBreakdown("optimism-bridge");
+
+await proClient.bridges.getChartByCategory("canonical-bridge");
+await proClient.bridges.getChartByCategoryChainBreakdown("canonical-bridge");
+await proClient.bridges.getChartByCategoryProtocolBreakdown("canonical-bridge");
+await proClient.bridges.getChartByCategoryAndChain("canonical-bridge", "Ethereum");
+await proClient.bridges.getChartByCategoryAndChainProtocolBreakdown("canonical-bridge", "Ethereum");
+```
+
+### Legacy bridges API
+
+All methods that call the legacy `/bridges/*` routes are deprecated. The legacy bridges server will be shut down
+
+| Deprecated | Replacement |
+| --- | --- |
+| `getAll` | `getMetrics` |
+| `getById` | `getMetricsByProtocol` (takes a protocol slug, not the numeric ID) |
+| `getVolumeByChain` | `getChartByChain` with `dailyIncomingVolume` / `dailyOutgoingVolume` |
+| `getDayStats` | None |
+| `getTransactions` | None |
 
 ### getDayStats
 
@@ -969,8 +1012,9 @@ import type {
   EmissionDetailResponse,
 
   // Bridges
-  BridgeSummary,
-  BridgeDetail,
+  BridgeMetricsResponse,
+  BridgeMetricsByProtocolResponse,
+  BridgeChartDataPoint,
   BridgeTransaction,
 
   // Ecosystem
@@ -997,7 +1041,7 @@ import type {
 ## Constants
 
 ```typescript
-import { AdapterType, FeeDataType, VolumeDataType } from "@defillama/api";
+import { AdapterType, BridgeDataType, FeeDataType, VolumeDataType } from "@defillama/api";
 
 // Adapter Types
 AdapterType.DEXS; // "dexs"
@@ -1007,6 +1051,7 @@ AdapterType.DERIVATIVES; // "derivatives"
 AdapterType.AGGREGATOR_DERIVATIVES; // "aggregator-derivatives"
 AdapterType.OPTIONS; // "options"
 AdapterType.BRIDGE_AGGREGATORS; // "bridge-aggregators"
+AdapterType.BRIDGES; // "bridges"
 AdapterType.OPEN_INTEREST; // "open-interest"
 
 // Volume Data Types
@@ -1017,6 +1062,14 @@ VolumeDataType.DAILY_BRIDGE_VOLUME; // "dailyBridgeVolume"
 VolumeDataType.OPEN_INTEREST_AT_END; // "openInterestAtEnd"
 VolumeDataType.SHORT_OPEN_INTEREST_AT_END; // "shortOpenInterestAtEnd"
 VolumeDataType.LONG_OPEN_INTEREST_AT_END; // "longOpenInterestAtEnd"
+
+// Bridge Data Types
+BridgeDataType.DAILY_AGGREGATED_VOLUME; // "dailyAggregatedVolume"
+BridgeDataType.DAILY_OUTGOING_VOLUME; // "dailyOutgoingVolume"
+BridgeDataType.DAILY_INCOMING_VOLUME; // "dailyIncomingVolume"
+BridgeDataType.DAILY_TX_COUNT; // "dailyTxCount"
+BridgeDataType.DAILY_OUTGOING_TX_COUNT; // "dailyOutgoingTxCount"
+BridgeDataType.DAILY_INCOMING_TX_COUNT; // "dailyIncomingTxCount"
 ```
 
 ---
