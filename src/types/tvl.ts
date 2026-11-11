@@ -5,7 +5,7 @@ export interface Protocol {
   symbol: string;
   url: string;
   description?: string;
-  chain: string;
+  chain?: string;
   logo?: string;
   audits?: string;
   audit_note?: string | null;
@@ -20,7 +20,7 @@ export interface Protocol {
   listedAt?: number;
   methodology?: string | Record<string, string>;
   slug: string;
-  tvl: number;
+  tvl?: number | null;
   chainTvls: Record<string, number>;
   change_1h?: number | null;
   change_1d?: number | null;

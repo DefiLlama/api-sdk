@@ -21,7 +21,7 @@ export interface FeesProtocol {
   displayName: string;
   module: string;
   category: string;
-  logo: string;
+  logo?: string;
   chains: string[];
   protocolType: string;
   methodologyURL: string;
@@ -91,7 +91,7 @@ export interface FeesSummaryResponse {
   id: string;
   name: string;
   url: string;
-  description: string;
+  description?: string | null;
   logo: string;
   gecko_id: string | null;
   cmcId: string | null;
@@ -100,7 +100,7 @@ export interface FeesSummaryResponse {
   treasury: string | null;
   governanceID: string[] | null;
   github: string[] | null;
-  symbol: string | null;
+  symbol?: string | null;
   address: string | null;
   linkedProtocols?: string[] | null;
   childProtocols?: FeesSummaryChildProtocol[] | null;
@@ -123,8 +123,8 @@ export interface FeesSummaryResponse {
   protocolType: string;
   total24h: number | null;
   total48hto24h: number | null;
-  total7d: number | null;
-  total30d: number | null;
+  total7d?: number | null;
+  total30d?: number | null;
   totalAllTime: number | null;
   totalDataChart: [number, number][];
   totalDataChartBreakdown: NestedChartBreakdownDataPoint[];
