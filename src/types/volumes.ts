@@ -186,8 +186,8 @@ export interface VolumeSummaryResponse {
   childProtocols?: string[] | null;
   defillamaId: string;
   displayName: string;
-  module: string;
-  category: string;
+  module: string | null;
+  category: string | null;
   methodologyURL: string | null;
   methodology: Record<string, string> | string | null;
   forkedFrom: string[] | null;
@@ -200,8 +200,8 @@ export interface VolumeSummaryResponse {
   protocolType: string;
   total24h: number | null;
   total48hto24h: number | null;
-  total7d: number | null;
-  total30d: number | null;
+  total7d?: number | null;
+  total30d?: number | null;
   totalAllTime: number | null;
   totalDataChart: [number, number][];
   totalDataChartBreakdown: VolumeNestedChartBreakdownDataPoint[];

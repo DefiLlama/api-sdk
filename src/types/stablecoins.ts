@@ -79,7 +79,7 @@ export interface Stablecoin {
   /** Current price in USD */
   price: number | null;
   /** Source of price data */
-  priceSource: string | null;
+  priceSource?: string | null;
 }
 
 /**
@@ -212,11 +212,11 @@ export interface StablecoinDetails {
  */
 export interface StablecoinChainMcap {
   /** CoinGecko chain identifier */
-  gecko_id: string | null;
+  gecko_id?: string | null;
   /** Total stablecoin market cap on this chain */
   totalCirculatingUSD: PeggedAsset;
   /** Native token symbol of the chain */
-  tokenSymbol: string | null;
+  tokenSymbol?: string | null;
   /** Chain name */
   name: string;
 }
