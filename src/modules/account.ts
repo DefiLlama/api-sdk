@@ -1,4 +1,5 @@
 import type { BaseClient } from "../client.js";
+import { ApiKeyRequiredError } from "../errors.js";
 import type { UsageResponse } from "../types/account.js";
 
 /**
@@ -32,14 +33,16 @@ export class AccountModule {
   async getUsage(): Promise<UsageResponse> {
     const apiKey = this.client.getApiKey();
     if (!apiKey) {
-      throw new Error("API key required for usage endpoint");
+      throw new ApiKeyRequiredError("/usage");
     }
-    const response = await fetch(`https://pro-api.llama.fi/usage/${apiKey}`, {
-      headers: { Accept: "application/json" },
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch usage: ${response.statusText}`);
-    }
-    return response.json() as Promise<UsageResponse>;
+
+    return this.client.request<UsageResponse>(
+      `https://pro-api.llama.fi/usage/${apiKey}`,
+      "/usage",
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      }
+    );
   }
 }
