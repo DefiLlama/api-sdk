@@ -1,7 +1,7 @@
 import type { BaseClient } from "../client.js";
 import type {
-  EtfOverviewItem,
-  EtfHistoryItem,
+  EtfSnapshotItem,
+  EtfFlowItem,
   FdvPeriod,
   FdvPerformanceItem,
 } from "../types/etfs.js";
@@ -9,29 +9,15 @@ import type {
 export class EtfsModule {
   constructor(private client: BaseClient) {}
 
-  async getOverview(): Promise<EtfOverviewItem[]> {
-    return this.client.get<EtfOverviewItem[]>("/overview", {
+  async getSnapshot(): Promise<EtfSnapshotItem[]> {
+    return this.client.get<EtfSnapshotItem[]>("/snapshot", {
       requiresAuth: true,
       apiNamespace: "etfs",
     });
   }
 
-  async getOverviewEth(): Promise<EtfOverviewItem[]> {
-    return this.client.get<EtfOverviewItem[]>("/overviewEth", {
-      requiresAuth: true,
-      apiNamespace: "etfs",
-    });
-  }
-
-  async getHistory(): Promise<EtfHistoryItem[]> {
-    return this.client.get<EtfHistoryItem[]>("/history", {
-      requiresAuth: true,
-      apiNamespace: "etfs",
-    });
-  }
-
-  async getHistoryEth(): Promise<EtfHistoryItem[]> {
-    return this.client.get<EtfHistoryItem[]>("/historyEth", {
+  async getFlows(): Promise<EtfFlowItem[]> {
+    return this.client.get<EtfFlowItem[]>("/flows", {
       requiresAuth: true,
       apiNamespace: "etfs",
     });
