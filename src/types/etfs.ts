@@ -1,4 +1,4 @@
-export interface EtfOverviewItem {
+export interface EtfSnapshotItem {
   ticker: string;
   timestamp: number;
   asset: string;
@@ -12,7 +12,7 @@ export interface EtfOverviewItem {
   volume: number;
 }
 
-export interface EtfHistoryItem {
+export interface EtfFlowItem {
   gecko_id: string;
   day: string;
   total_flow_usd: number;

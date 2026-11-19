@@ -845,40 +845,27 @@ const raises = await proClient.ecosystem.getRaises();
 
 ## ETFs 🔐
 
-Bitcoin and Ethereum ETF data. **All endpoints require Pro API key.**
+ETF metrics and flows. **All endpoints require Pro API key.**
 
-### getOverview
+### getSnapshot
 
-Get Bitcoin ETF overview.
+Get every ETF with its current metrics, one row per ticker. Each row carries the asset it
+belongs to, so filter client side for a single asset.
 
 ```typescript
-const btcEtfs = await proClient.etfs.getOverview();
-// Returns: EtfOverviewItem[]
+const etfs = await proClient.etfs.getSnapshot();
+// Returns: EtfSnapshotItem[]
+const btcEtfs = etfs.filter((etf) => etf.asset === "bitcoin");
 ```
 
-### getOverviewEth
+### getFlows
 
-Get Ethereum ETF overview.
-
-```typescript
-const ethEtfs = await proClient.etfs.getOverviewEth();
-```
-
-### getHistory
-
-Get Bitcoin ETF flow history.
+Get historical daily flows per asset.
 
 ```typescript
-const history = await proClient.etfs.getHistory();
-// Returns: EtfHistoryItem[]
-```
-
-### getHistoryEth
-
-Get Ethereum ETF flow history.
-
-```typescript
-const history = await proClient.etfs.getHistoryEth();
+const flows = await proClient.etfs.getFlows();
+// Returns: EtfFlowItem[]
+const ethFlows = flows.filter((row) => row.gecko_id === "ethereum");
 ```
 
 ### getFdvPerformance
@@ -1024,8 +1011,8 @@ import type {
   Raise,
 
   // ETFs
-  EtfOverviewItem,
-  EtfHistoryItem,
+  EtfSnapshotItem,
+  EtfFlowItem,
 
   // DAT
   DatInstitutionsResponse,
