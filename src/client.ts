@@ -70,15 +70,19 @@ export class BaseClient {
       return `${BASE_URLS.pro}/${this.apiKey}/bridges${endpoint}`;
     }
 
+    // The free hosts never read the key, so a keyed client sends free endpoints to pro-api too.
+    // Otherwise paying users hit the free rate limits.
     if (base === "coins") {
-      return `${BASE_URLS.coins}${endpoint}`;
+      return this.apiKey ? `${BASE_URLS.pro}/${this.apiKey}/coins${endpoint}` : `${BASE_URLS.coins}${endpoint}`;
     }
 
     if (base === "stablecoins") {
-      return `${BASE_URLS.stablecoins}${endpoint}`;
+      return this.apiKey
+        ? `${BASE_URLS.pro}/${this.apiKey}/stablecoins${endpoint}`
+        : `${BASE_URLS.stablecoins}${endpoint}`;
     }
 
-    if (requiresAuth) {
+    if (requiresAuth || this.apiKey) {
       if (!this.apiKey) {
         throw new ApiKeyRequiredError(endpoint);
       }

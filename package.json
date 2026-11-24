@@ -32,7 +32,8 @@
     "validate:datatypes": "bun scripts/validate-datatypes.ts",
     "prepublishOnly": "npm run build",
     "release": "npm login && npm version patch && npm publish",
-    "release:minor": "npm login && npm version minor && npm publish"
+    "release:minor": "npm login && npm version minor && npm publish",
+    "test": "tsup && node --test \"test/*.test.mjs\""
   },
   "keywords": [
     "defillama",

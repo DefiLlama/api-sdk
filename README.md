@@ -43,7 +43,7 @@ const prices = await client.prices.getCurrentPrices([
 
 ```typescript
 interface DefiLlamaConfig {
-  apiKey?: string; // API key from https://defillama.com/subscription (requires API plan)
+  apiKey?: string; // API key from https://defillama.com/subscription (requires API plan). With a key, every request goes to pro-api.llama.fi, free endpoints included
   timeout?: number; // Request timeout in ms (default: 30000)
 }
 ```
